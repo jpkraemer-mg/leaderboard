@@ -1,0 +1,23 @@
+schema:
+  Guild:
+    type: object
+    properties:
+      guild_id:
+        required: true
+        type: integer
+        format: int64
+      channel_id:
+        required: true
+        type: integer
+        format: int64
+      name:
+        required: true
+        type: string
+  GuildsQueryResult:
+    type: object
+    properties:
+      items:
+        type: array
+        required: true
+        items:
+          $ref: '#/schema/Guild'

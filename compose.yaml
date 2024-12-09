@@ -1,0 +1,18 @@
+services:
+  mysql:
+    image: 'mysql:8'
+    environment:
+      MYSQL_DATABASE: leaderboard
+      MYSQL_ROOT_PASSWORD: toor
+    ports:
+      - "33060:3306"
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./api:/usr/share/nginx/html/doc
+    environment:
+      API_URL: doc/openapi.yaml
+    network_mode: host

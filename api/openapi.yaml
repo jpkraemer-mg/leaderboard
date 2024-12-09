@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: Media Library API
+  description: Media Library API
+  version: 1.0.0
+servers:
+  - url: '{base-url}'
+    variables:
+      base-url:
+        default: http://localhost:8080
+
+paths:
+  /api/guilds:
+    get:
+      tags:
+        - guilds
+      summary: Returns a list of all participating Guilds
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'openapi-schema.yaml#/schema/GuildsQueryResult'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem'
+    post:
+      tags:
+        - guilds
+      summary: Create a new Guild object
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: 'openapi-schema.yaml#/schema/Guild'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: 'openapi-schema.yaml#/schema/Guild'
+        400:
+          description: Bad Request
+          content:
+            'application/json':
+              schema:
+                $ref: 'https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: 'https://opensource.zalando.com/restful-api-guidelines/models/problem-1.0.1.yaml#/Problem'
