@@ -11,6 +11,7 @@ import quest.darkoro.leaderboard.api.GuildsApi;
 import quest.darkoro.leaderboard.api.model.Guild;
 import quest.darkoro.leaderboard.api.model.GuildsQueryResult;
 import quest.darkoro.leaderboard.persistence.GuildRepository;
+import quest.darkoro.leaderboard.services.GuildService;
 import quest.darkoro.leaderboard.utils.JpaApiMapper;
 
 @Slf4j
@@ -20,6 +21,7 @@ import quest.darkoro.leaderboard.utils.JpaApiMapper;
 public class GuildController implements GuildsApi {
 
   private final GuildRepository guildRepository;
+  private final GuildService guildService;
 
   @Override
   public ResponseEntity<GuildsQueryResult> apiGuildsGet(Optional<@Min(1) Integer> limit) {
@@ -27,6 +29,11 @@ public class GuildController implements GuildsApi {
     var result = new GuildsQueryResult();
     result.setItems(guilds.stream().map(JpaApiMapper::toApi).toList());
     return ResponseEntity.ok(result);
+  }
+
+  @Override
+  public ResponseEntity<Void> apiGuildsIdDelete(Long id) {
+    return guildService.deleteGuildByGuildId(id);
   }
 
   @Override
