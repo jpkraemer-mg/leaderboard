@@ -7,7 +7,7 @@ servers:
   - url: '{base-url}'
     variables:
       base-url:
-        default: http://localhost:8080
+        default: http://localhost:8082
 
 paths:
   /api/guilds:

@@ -7,5 +7,6 @@ import quest.darkoro.leaderboard.persistence.models.Guild;
 
 @Repository
 public interface GuildRepository extends JpaRepository<Guild, Long> {
-    Optional<Guild> getGuildByGuildId(Long guildId);
+
+  Optional<Guild> getGuildByGuildId(Long guildId);
 }
