@@ -26,7 +26,7 @@ schema:
     type: object
     properties:
       id:
-        required: false
+        readOnly: true
         type: string
         format: uuid
       open:
@@ -39,6 +39,9 @@ schema:
         required: true
         type: integer
         format: int64
+      name:
+        required: true
+        type: string
   BoardsQueryResult:
     type: object
     properties:

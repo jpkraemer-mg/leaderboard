@@ -24,4 +24,7 @@ public class Board {
 
   @JoinColumn(name = "guildId", foreignKey = @ForeignKey(name = "FK_BOARD_GUILD", foreignKeyDefinition = "FOREIGN KEY (guild_id) REFERENCES guild(guild_id)"))
   private Long guildId;
+
+  @Column
+  private String name;
 }

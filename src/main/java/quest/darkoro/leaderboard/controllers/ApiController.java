@@ -1,6 +1,9 @@
 package quest.darkoro.leaderboard.controllers;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityExistsException;
 import jakarta.validation.constraints.Min;
+import java.lang.String;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +59,9 @@ public class ApiController implements GuildsApi, BoardsApi {
 
     @Override
     public ResponseEntity<Board> apiBoardsPost(Board board) {
+        var guild = guildRepository.getGuildByGuildId(board.getGuildId());
+        if (guild.isEmpty()) return ResponseEntity.badRequest().body(board);
+
         var savedBoard = boardRepository.save(JpaApiMapper.toJpa(board, null));
         return ResponseEntity.ok(JpaApiMapper.toApi(savedBoard));
     }

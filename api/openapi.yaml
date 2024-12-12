@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Media Library API
-  description: Media Library API
-  version: 1.0.0
+  title: Leaderboard API
+  description: API for accessing and managing Leaderboard and connected entities
+  version: v0.0.1-ALPHA
 servers:
   - url: '{base-url}'
     variables:
