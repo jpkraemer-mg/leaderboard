@@ -17,12 +17,12 @@ public class GuildService {
     return guildRepository.getGuildByGuildId(guildId);
   }
 
-  public ResponseEntity<Void> deleteGuildByGuildId(Long guildId) {
-    var guild = guildRepository.getGuildByGuildId(guildId);
-    if (guild.isPresent()) {
-      guild.ifPresent(guildRepository::delete);
-      return ResponseEntity.ok().build();
-    }
-    return ResponseEntity.badRequest().build();
+  public ResponseEntity<Object> deleteGuildByGuildId(Long guildId) {
+    return guildRepository.getGuildByGuildId(guildId)
+        .map(guild -> {
+          guildRepository.delete(guild);
+          return ResponseEntity.ok().build();
+        })
+        .orElse(ResponseEntity.badRequest().build());
   }
 }

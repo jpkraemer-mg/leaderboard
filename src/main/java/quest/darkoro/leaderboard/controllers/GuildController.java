@@ -32,7 +32,7 @@ public class GuildController implements GuildsApi {
   }
 
   @Override
-  public ResponseEntity<Void> apiGuildsIdDelete(Long id) {
+  public ResponseEntity<Object> apiGuildsIdDelete(Long id) {
     return guildService.deleteGuildByGuildId(id);
   }
 
