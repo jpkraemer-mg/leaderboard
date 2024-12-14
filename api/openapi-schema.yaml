@@ -29,6 +29,9 @@ schema:
         readOnly: true
         type: string
         format: uuid
+      open:
+        required: true
+        type: boolean
       level:
         required: true
         type: integer
@@ -39,12 +42,6 @@ schema:
       name:
         required: true
         type: string
-      shared:
-        required: true
-        type: boolean
-      pending:
-        required: true
-        type: boolean
   BoardsQueryResult:
     type: object
     properties:

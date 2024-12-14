@@ -17,6 +17,9 @@ public class Board {
   private UUID id;
 
   @Column
+  private boolean open;
+
+  @Column
   private int level;
 
   @JoinColumn(name = "guildId", foreignKey = @ForeignKey(name = "FK_BOARD_GUILD", foreignKeyDefinition = "FOREIGN KEY (guild_id) REFERENCES guild(guild_id)"))
@@ -24,10 +27,4 @@ public class Board {
 
   @Column
   private String name;
-
-  @Column
-  private boolean shared;
-
-  @Column
-  private boolean pending;
 }

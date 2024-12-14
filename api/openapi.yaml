@@ -79,8 +79,6 @@ paths:
             type: integer
             format: int64
       responses:
-        202:
-          description: Accepted
         204:
           description: No Content
         400:
@@ -165,8 +163,6 @@ paths:
             type: string
             format: uuid
       responses:
-        202:
-          description: Accepted
         204:
           description: No Content
         400:
