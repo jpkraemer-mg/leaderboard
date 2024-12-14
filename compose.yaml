@@ -15,4 +15,4 @@ services:
       - ./api:/usr/share/nginx/html/doc
     environment:
       API_URL: doc/openapi.yaml
-    network_mode: host
+    #network_mode: host

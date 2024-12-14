@@ -13,12 +13,12 @@ public class BoardService {
   private final BoardRepository boardRepository;
   private final GuildService guildService;
 
-  public ResponseEntity<Void> deleteBoardByBoardId(UUID boardId) {
-    var board = boardRepository.findBoardById(boardId);
-    if (board.isPresent()) {
-      board.ifPresent(boardRepository::delete);
-      return ResponseEntity.ok().build();
-    }
-    return ResponseEntity.badRequest().build();
+  public ResponseEntity<Object> deleteBoardByBoardId(UUID boardId) {
+    return boardRepository.findBoardById(boardId)
+        .map(board -> {
+          boardRepository.delete(board);
+          return ResponseEntity.noContent().build();
+        })
+        .orElse(ResponseEntity.accepted().build());
   }
 }

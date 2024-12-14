@@ -29,7 +29,8 @@ public interface JpaApiMapper {
         .guildId(board.getGuildId())
         .id(board.getId())
         .level(board.getLevel())
-        .open(board.isOpen())
+        .shared(board.isShared())
+        .pending(board.isPending())
         .name(board.getName());
   }
 
@@ -40,7 +41,8 @@ public interface JpaApiMapper {
         .setId(UUID.randomUUID())
         .setGuildId(board.getGuildId())
         .setLevel(board.getLevel())
-        .setOpen(board.getOpen())
+        .setShared(board.getShared())
+        .setPending(board.getPending())
         .setName(board.getName());
   }
 }

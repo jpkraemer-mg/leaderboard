@@ -37,7 +37,7 @@ public class BoardController implements BoardsApi {
   }
 
   @Override
-  public ResponseEntity<Void> apiBoardsIdDelete(UUID id) {
+  public ResponseEntity<Object> apiBoardsIdDelete(UUID id) {
     return boardService.deleteBoardByBoardId(id);
   }
 
