@@ -3,13 +3,11 @@ package quest.darkoro.leaderboard.commands;
 import static net.dv8tion.jda.api.Permission.ADMINISTRATOR;
 import static net.dv8tion.jda.api.Permission.MANAGE_SERVER;
 import static net.dv8tion.jda.api.interactions.DiscordLocale.GERMAN;
-import static net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions.ENABLED;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.CHANNEL;
 import static net.dv8tion.jda.api.interactions.commands.OptionType.ROLE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;

@@ -1,5 +1,6 @@
 package quest.darkoro.leaderboard.services;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,10 @@ public class GuildService {
 
   public Guild saveGuild(Guild guild) {
     return guildRepository.save(guild);
+  }
+
+  public List<Guild> getAllGuilds() {
+    return guildRepository.findAll();
   }
 
   public ResponseEntity<Void> deleteGuildByGuildId(Long guildId) {

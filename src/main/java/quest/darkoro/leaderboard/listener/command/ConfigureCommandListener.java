@@ -1,4 +1,4 @@
-package quest.darkoro.leaderboard.listener;
+package quest.darkoro.leaderboard.listener.command;
 
 import static net.dv8tion.jda.api.interactions.DiscordLocale.GERMAN;
 
@@ -7,14 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Service;
-import quest.darkoro.leaderboard.interfaces.BaseListener;
+import quest.darkoro.leaderboard.annotations.SecondaryListener;
 import quest.darkoro.leaderboard.persistence.models.Guild;
 import quest.darkoro.leaderboard.services.GuildService;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ConfigureCommandListener extends ListenerAdapter implements BaseListener {
+@SecondaryListener
+public class ConfigureCommandListener extends ListenerAdapter {
 
   private final GuildService guildService;
 
@@ -33,6 +34,7 @@ public class ConfigureCommandListener extends ListenerAdapter implements BaseLis
             .setName(e.getGuild().getName())
             .setChannelId(l.getIdLong())
             .setSubmissionChannelId(s.getIdLong())
+            .setPermitted(e.getOption("permitted").getAsRole().getIdLong())
     );
     log.info("(Re)configured guild '{}' with board channel '{}' and submission channel '{}'",
         e.getGuild().getName(), l.getName(), s.getName());

@@ -1,5 +1,6 @@
 package quest.darkoro.leaderboard.services;
 
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,15 @@ public class BoardService {
           return ResponseEntity.noContent().<Void>build();
         })
         .orElse(ResponseEntity.accepted().build());
+  }
+
+  public Optional<Board> getBoardById(UUID boardId) {
+    return boardRepository.findBoardById(boardId);
+  }
+
+  public Optional<Board> getBoardByGuildIdAndNameAndSharedAndPending(Long guildId, String name,
+      boolean shared, boolean pending) {
+    return boardRepository.getBoardByGuildIdAndNameAndSharedAndPending(guildId, name, shared,
+        pending);
   }
 }
