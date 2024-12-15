@@ -1,13 +1,15 @@
 package quest.darkoro.leaderboard.configuration;
 
-import discord4j.core.DiscordClientBuilder;
-import discord4j.core.GatewayDiscordClient;
-import discord4j.core.event.domain.Event;
+import java.util.EnumSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import quest.darkoro.leaderboard.listener.BotReadyListener;
 
 @Configuration
 @RequiredArgsConstructor
@@ -16,9 +18,21 @@ public class BotConfiguration {
 
   @Value("${quest.darkoro.token}")
   private String token;
+  private final BotReadyListener botReadyListener;
 
   @Bean
-  public <T extends Event> GatewayDiscordClient a() {
-    return DiscordClientBuilder.create(token).build().login().block();
+  public JDA bot() {
+    JDA jda = JDABuilder
+        .createLight(token, EnumSet.allOf(GatewayIntent.class))
+        .addEventListeners(botReadyListener)
+        .build();
+
+    try {
+      jda.awaitReady();
+    } catch (InterruptedException e) {
+      log.error("Error while initializing JDA", e);
+      Thread.currentThread().interrupt();
+    }
+    return jda;
   }
 }

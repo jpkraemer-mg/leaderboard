@@ -12,7 +12,9 @@ public interface JpaApiMapper {
     return new Guild()
         .guildId(guild.getGuildId())
         .channelId(guild.getChannelId())
-        .name(guild.getName());
+        .name(guild.getName())
+        .submissionChannelId(guild.getSubmissionChannelId())
+        .permitted(guild.getPermitted());
   }
 
   static quest.darkoro.leaderboard.persistence.models.Guild toJpa(Guild guild, @Nullable
@@ -21,7 +23,9 @@ public interface JpaApiMapper {
             new quest.darkoro.leaderboard.persistence.models.Guild())
         .setGuildId(guild.getGuildId())
         .setChannelId(guild.getChannelId())
-        .setName(guild.getName());
+        .setName(guild.getName())
+        .setSubmissionChannelId(guild.getSubmissionChannelId())
+        .setPermitted(guild.getPermitted());
   }
 
   static Board toApi(quest.darkoro.leaderboard.persistence.models.Board board) {

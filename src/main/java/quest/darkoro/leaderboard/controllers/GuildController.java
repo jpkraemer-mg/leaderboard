@@ -32,13 +32,13 @@ public class GuildController implements GuildsApi {
   }
 
   @Override
-  public ResponseEntity<Object> apiGuildsIdDelete(Long id) {
+  public ResponseEntity<Void> apiGuildsIdDelete(Long id) {
     return guildService.deleteGuildByGuildId(id);
   }
 
   @Override
   public ResponseEntity<Guild> apiGuildsPost(Guild guild) {
-    var savedGuild = guildRepository.save(JpaApiMapper.toJpa(guild, null));
+    var savedGuild = guildService.saveGuild(JpaApiMapper.toJpa(guild, null));
     return ResponseEntity.ok(JpaApiMapper.toApi(savedGuild));
   }
 }

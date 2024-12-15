@@ -21,11 +21,11 @@ public class GuildService {
     return guildRepository.save(guild);
   }
 
-  public ResponseEntity<Object> deleteGuildByGuildId(Long guildId) {
+  public ResponseEntity<Void> deleteGuildByGuildId(Long guildId) {
     return guildRepository.getGuildByGuildId(guildId)
         .map(guild -> {
           guildRepository.delete(guild);
-          return ResponseEntity.noContent().build();
+          return ResponseEntity.noContent().<Void>build();
         })
         .orElse(ResponseEntity.accepted().build());
   }

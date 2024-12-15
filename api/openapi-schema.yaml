@@ -13,6 +13,14 @@ schema:
       name:
         required: true
         type: string
+      submission_channel_id:
+        required: true
+        type: integer
+        format: int64
+      permitted:
+        required: true
+        type: integer
+        format: int64
   GuildsQueryResult:
     type: object
     properties:
