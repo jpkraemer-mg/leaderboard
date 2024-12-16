@@ -54,7 +54,8 @@ public class AcceptSubmitButtonListener extends ListenerAdapter {
                 .setFooter(
                     String.format("Submission accepted by %s - %s",
                         e.getUser().getEffectiveName(),
-                        e.getGuild().getName()))
+                        e.getGuild().getName())
+                )
                 .addField("Username", embed.getFields().get(0).getValue(), true)
                 .addField("Level", embed.getFields().get(1).getValue(), true)
                 .addField("Submission ID", b.getId().toString(), false)

@@ -21,6 +21,9 @@ schema:
         required: true
         type: integer
         format: int64
+      top:
+        required: false
+        type: integer
   GuildsQueryResult:
     type: object
     properties:

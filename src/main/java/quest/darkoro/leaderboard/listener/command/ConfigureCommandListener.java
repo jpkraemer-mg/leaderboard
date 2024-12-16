@@ -24,10 +24,21 @@ public class ConfigureCommandListener extends ListenerAdapter {
     if (!e.getName().matches("configure|konfiguration") || e.isAcknowledged()) {
       return;
     }
+    if (e.getSubcommandName().equals("server")) {
+      handleConfigureServer(e);
+    }
+    if (e.getSubcommandName().equals("profile")) {
+      handleConfigureProfile(e);
+    }
+    e.reply(String.format("Unknown subcommand '%s'", e.getSubcommandName()));
+  }
+
+  private void handleConfigureServer(SlashCommandInteractionEvent e) {
     var l = e.getOption(e.getUserLocale() != GERMAN ? "leaderboards" : "bestenlisten")
         .getAsChannel();
     var s = e.getOption(e.getUserLocale() != GERMAN ? "submissions" : "einreichungen")
         .getAsChannel();
+    var limit = e.getOption("limit");
     guildService.saveGuild(
         new Guild()
             .setGuildId(e.getGuild().getIdLong())
@@ -35,6 +46,7 @@ public class ConfigureCommandListener extends ListenerAdapter {
             .setChannelId(l.getIdLong())
             .setSubmissionChannelId(s.getIdLong())
             .setPermitted(e.getOption("permitted").getAsRole().getIdLong())
+            .setTop(limit != null && limit.getAsInt() > 0 ? limit.getAsInt() : -1)
     );
     log.info("(Re)configured guild '{}' with board channel '{}' and submission channel '{}'",
         e.getGuild().getName(), l.getName(), s.getName());
@@ -43,6 +55,14 @@ public class ConfigureCommandListener extends ListenerAdapter {
       return;
     }
     e.reply("Configuration successful!").setEphemeral(true).queue();
+  }
 
+  private void handleConfigureProfile(SlashCommandInteractionEvent e) {
+    e.getGuild().getSelfMember().modifyNickname(e.getOption("name").getAsString()).queue();
+    e.reply("Successfully updated nickname!").setEphemeral(true).queue();
+    log.info("Successfully updated nickname for guild '{}' ({}) to '{}'",
+        e.getGuild().getId(),
+        e.getGuild().getName(),
+        e.getOption("name").getAsString());
   }
 }

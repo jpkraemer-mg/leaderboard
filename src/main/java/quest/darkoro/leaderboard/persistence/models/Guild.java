@@ -27,4 +27,7 @@ public class Guild {
 
   @Column
   private Long permitted;
+
+  @Column
+  private Integer top;
 }

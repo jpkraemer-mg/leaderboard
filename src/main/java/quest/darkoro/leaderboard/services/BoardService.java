@@ -1,8 +1,10 @@
 package quest.darkoro.leaderboard.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Limit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import quest.darkoro.leaderboard.persistence.BoardRepository;
@@ -36,5 +38,9 @@ public class BoardService {
       boolean shared, boolean pending) {
     return boardRepository.getBoardByGuildIdAndNameAndSharedAndPending(guildId, name, shared,
         pending);
+  }
+
+  public List<Board> findTopEntriesByGuildId(Long guildId, int limit) {
+    return boardRepository.findTopByGuildId(guildId, Limit.of(limit));
   }
 }
