@@ -1,14 +1,20 @@
 package quest.darkoro.leaderboard.services;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import quest.darkoro.leaderboard.persistence.models.Board;
 import quest.darkoro.leaderboard.persistence.models.Guild;
 
 @Service
@@ -48,6 +54,11 @@ public class LeaderboardService {
   public void scanForUnprocessed() {
     log.info("Checking for unprocessed entries");
     var newEntries = boardService.findUnprocessed();
+    List<Long> guilds = new ArrayList<>();
+    for (Board entry : newEntries) {
+        if (!guilds.contains(entry.getGuildId())) guilds.add(entry.getGuildId());
+    }
+    log.info("Found {} guild updates", guilds.size());
     if (!newEntries.isEmpty()) {
       bot.getTextChannelById(
               guildService.getGuildByGuildId(newEntries.get(0).getGuildId())
@@ -70,7 +81,10 @@ public class LeaderboardService {
         .setColor(0x00FF00)
         .setTitle(String.format((shared ? "Public " : "") + "Leaderboard - Updated <t:%s:R>",
             Instant.now().getEpochSecond()))
-        .setFooter(String.format("Leaderboard Bot - %s", guild.getName()))
-        .addField("test", "Test", true);
+        .setFooter(String.format("Leaderboard Bot - %s", guild.getName()));
+  }
+
+  public MessageEmbed finishEmbed(EmbedBuilder preparedEmbed) {
+    return null;
   }
 }

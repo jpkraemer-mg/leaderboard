@@ -55,23 +55,7 @@ public class BoardService {
     return boardRepository.findUnprocessed();
   }
 
-  public List<Board> findSharedUnprocessed() {
-    return boardRepository.findSharedUnprocessed();
-  }
-
   public void setProcessed() {
     boardRepository.setProcessed();
-  }
-
-  public void setSharedProcessed() {
-    boardRepository.setSharedProcessed();
-  }
-
-  public void setProcessedByGuildId(Long guildId) {
-    boardRepository.setProcessedByGuildId(guildId);
-  }
-
-  public Optional<Board> findDistinctAllByPendingAndProcessed() {
-    return boardRepository.findDistinctAllByPendingAndProcessed();
   }
 }

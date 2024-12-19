@@ -33,27 +33,11 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
   @Query(value = "SELECT * FROM board WHERE shared=1 AND level=119989", nativeQuery = true)
   List<Board> findMaxLevelAll();
 
-  @Query(value = "SELECT * FROM board WHERE pending=0 AND processed=0 AND shared=0", nativeQuery = true)
+  @Query(value = "SELECT * FROM board WHERE pending=0 AND processed=0", nativeQuery = true)
   List<Board> findUnprocessed();
-
-  @Query(value = "SELECT * FROM board WHERE pending=0 AND processed=0 AND shared=1", nativeQuery = true)
-  List<Board> findSharedUnprocessed();
-
-  @Query(value = "UPDATE board SET processed=1 WHERE pending=0 AND processed=0 AND shared=1", nativeQuery = true)
-  @Modifying
-  @Transactional
-  void setSharedProcessed();
-
-  @Query(value = "UPDATE board SET processed=1 WHERE guild_id=:guildId AND pending=0 AND processed=0", nativeQuery = true)
-  @Modifying
-  @Transactional
-  void setProcessedByGuildId(Long guildId);
 
   @Query(value = "UPDATE board SET processed=1 WHERE pending=0 AND processed=0", nativeQuery = true)
   @Modifying
   @Transactional
   void setProcessed();
-
-  @Query(value = "SELECT * FROM board WHERE processed=0 AND pending=0 AND shared=0 LIMIT 1", nativeQuery = true)
-  Optional<Board> findDistinctAllByPendingAndProcessed();
 }
