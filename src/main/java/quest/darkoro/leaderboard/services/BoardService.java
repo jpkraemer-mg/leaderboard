@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Limit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import quest.darkoro.leaderboard.persistence.BoardRepository;
@@ -41,6 +40,38 @@ public class BoardService {
   }
 
   public List<Board> findTopEntriesByGuildId(Long guildId, int limit) {
-    return boardRepository.findTopByGuildId(guildId, Limit.of(limit));
+    return boardRepository.findTopByGuildId(guildId, limit);
+  }
+
+  public List<Board> findMaxLevelByGuildId(Long guildId) {
+    return boardRepository.findMaxLevelByGuildId(guildId);
+  }
+
+  public List<Board> findMaxAll() {
+    return boardRepository.findMaxLevelAll();
+  }
+
+  public List<Board> findUnprocessed() {
+    return boardRepository.findUnprocessed();
+  }
+
+  public List<Board> findSharedUnprocessed() {
+    return boardRepository.findSharedUnprocessed();
+  }
+
+  public void setProcessed() {
+    boardRepository.setProcessed();
+  }
+
+  public void setSharedProcessed() {
+    boardRepository.setSharedProcessed();
+  }
+
+  public void setProcessedByGuildId(Long guildId) {
+    boardRepository.setProcessedByGuildId(guildId);
+  }
+
+  public Optional<Board> findDistinctAllByPendingAndProcessed() {
+    return boardRepository.findDistinctAllByPendingAndProcessed();
   }
 }

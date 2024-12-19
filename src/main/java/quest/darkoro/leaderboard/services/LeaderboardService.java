@@ -1,22 +1,27 @@
 package quest.darkoro.leaderboard.services;
 
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import quest.darkoro.leaderboard.persistence.models.Guild;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 @EnableScheduling
 public class LeaderboardService {
+
   private final JDA bot;
   private final GuildService guildService;
   private final BoardService boardService;
 
-  @Scheduled(fixedRate = 300000L)
+  @Scheduled(fixedRate = 60000L)
   public void updateLeaderboards() {
     var guilds = guildService.getAllGuilds();
     bot.getGuilds().stream().filter(
@@ -26,18 +31,46 @@ public class LeaderboardService {
     ).forEach(
         guild -> {
           var check = guildService.getGuildByGuildId(guild.getIdLong()).get();
-          int limit = 15;
-          if (check.getTop() != null) {
-            limit = check.getTop() > 0 ? check.getTop() : 15;
-          }
+          int max = 15;
+          int limit =
+              (check.getTop() == null || check.getTop() < 1) ? max : Math.min(check.getTop(), max);
           var entries = boardService.findTopEntriesByGuildId(guild.getIdLong(), limit);
-          log.info("{} is configured has and {} out of {} entries",
+          log.info("{} is configured and has {} out of {} entries",
               guild.getName(),
               entries.size(),
               limit
           );
         }
     );
+  }
 
+  @Scheduled(fixedRate = 15000L)
+  public void scanForUnprocessed() {
+    log.info("Checking for unprocessed entries");
+    var newEntries = boardService.findUnprocessed();
+    if (!newEntries.isEmpty()) {
+      bot.getTextChannelById(
+              guildService.getGuildByGuildId(newEntries.get(0).getGuildId())
+                  .get()
+                  .getChannelId()
+          )
+          .sendMessage(MessageCreateData.fromEmbeds(
+              prepareEmbed(
+                  newEntries.get(0).isShared(),
+                  guildService.getGuildByGuildId(newEntries.get(0).getGuildId()).get()
+              ).build()))
+          .queue();
+      log.info("Found {} new entries", newEntries.size());
+      boardService.setProcessed();
+    }
+  }
+
+  public EmbedBuilder prepareEmbed(boolean shared, Guild guild) {
+    return new EmbedBuilder()
+        .setColor(0x00FF00)
+        .setTitle(String.format((shared ? "Public " : "") + "Leaderboard - Updated <t:%s:R>",
+            Instant.now().getEpochSecond()))
+        .setFooter(String.format("Leaderboard Bot - %s", guild.getName()))
+        .addField("test", "Test", true);
   }
 }

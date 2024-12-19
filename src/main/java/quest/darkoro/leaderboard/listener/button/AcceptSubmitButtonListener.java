@@ -36,6 +36,7 @@ public class AcceptSubmitButtonListener extends ListenerAdapter {
       b = boardService.saveBoard(
           existing.get()
               .setLevel(Integer.parseInt(embed.getFields().get(1).getValue()))
+              .setProcessed(false)
       );
       boardService.deleteBoardByBoardId(
           UUID.fromString(embed.getFields().get(2).getValue())

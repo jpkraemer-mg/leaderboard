@@ -36,4 +36,7 @@ public class Board {
 
   @Column
   private boolean pending;
+
+  @Column
+  private boolean processed = false;
 }

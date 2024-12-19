@@ -24,6 +24,9 @@ schema:
       top:
         required: false
         type: integer
+      processed:
+        required: false
+        type: integer
   GuildsQueryResult:
     type: object
     properties:

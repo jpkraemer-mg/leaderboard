@@ -53,7 +53,7 @@ public class BotReadyListener extends ListenerAdapter {
               .values()
               .stream()
               .map(l -> l.getClass().getSimpleName())
-              .collect(Collectors.toList())
+              .toList()
       );
     });
     log.info("Bot ready and running on {} Guild(s).", bot.getGuilds().size());
