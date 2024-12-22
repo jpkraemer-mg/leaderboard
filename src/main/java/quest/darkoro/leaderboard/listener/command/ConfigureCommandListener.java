@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.stereotype.Service;
 import quest.darkoro.leaderboard.annotations.SecondaryListener;
 import quest.darkoro.leaderboard.persistence.models.Guild;
 import quest.darkoro.leaderboard.services.GuildService;
 
+@Service
 @Slf4j
 @RequiredArgsConstructor
 @SecondaryListener
