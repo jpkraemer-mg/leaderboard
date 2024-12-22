@@ -9,6 +9,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LeaderboardApplication {
 
   public static void main(String[] args) {
+    final int cores = Runtime.getRuntime().availableProcessors();
+    if (cores <= 1) {
+      log.info("Available Cores '{}', setting Parallelism Flag", cores);
+      System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "1");
+    }
     SpringApplication.run(LeaderboardApplication.class, args);
     log.debug("Application started.");
   }

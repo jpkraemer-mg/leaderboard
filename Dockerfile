@@ -1,4 +1,4 @@
-FROM gradle:8.2.1-jdk17 AS builder
+FROM gradle:8.2.1-jdk21 AS builder
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN gradle build --stacktrace --no-daemon -i
 
 RUN rm /app/build/libs/*-plain.jar
 
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 
 WORKDIR /app
 
