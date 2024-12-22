@@ -31,7 +31,7 @@ jobs:
       - name: Extract Version
         id: get_version
         run: |
-          VERSION=${grep '^version ' build.gradle | awk '{print $2}' | tr -d \'"\' | tr -d \'\')
+          VERSION=${grep '^version ' build.gradle | awk '{print $2}' | tr -d '"' | tr -d "'")
           echo "VERSION=$VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
