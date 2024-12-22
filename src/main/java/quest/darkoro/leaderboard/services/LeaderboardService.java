@@ -49,7 +49,7 @@ public class LeaderboardService {
     );
   }
 
-  @Scheduled(fixedRate = 3600000L)
+  @Scheduled(fixedRate = 1800000L)
   public void forceRenew() {
     log.info("Hourly leaderboard renewal");
     var guilds = guildService.getAllGuilds();
