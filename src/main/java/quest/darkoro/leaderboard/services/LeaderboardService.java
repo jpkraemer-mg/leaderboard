@@ -32,6 +32,7 @@ public class LeaderboardService {
 
   @Scheduled(fixedRate = 15000L)
   public void scanNew() {
+    log.info("Scanning...");
     var guilds = guildService.getAllGuilds();
     bot.getGuilds().stream().filter(
         guild -> guilds.stream().anyMatch(
