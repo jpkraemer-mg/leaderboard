@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'quest.darkoro'
-version = '0.2.4'
+version = '0.2.5'
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
@@ -33,7 +33,7 @@ dependencies {
 	implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
 	implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.26'
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
-	implementation ('net.dv8tion:JDA:5.0.0-beta.13') {
+	implementation ('net.dv8tion:JDA:5.2.1') {
 		exclude module: "opus-java"
 	}
 	compileOnly 'org.projectlombok:lombok'
