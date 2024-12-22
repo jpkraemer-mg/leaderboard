@@ -17,23 +17,22 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
 
   Optional<Board> findBoardById(UUID id);
 
-  @Query("SELECT b FROM Board b WHERE b.guildId=:guildId AND b.name=:name AND b.shared=:shared AND b.pending=:pending")
-  Optional<Board> getBoardByGuildIdAndNameAndSharedAndPending(Long guildId, String name,
-      boolean shared, boolean pending);
+  @Query("SELECT b FROM Board b WHERE b.guildId=:guildId AND b.name=:name AND b.shared=:shared AND b.pending=false")
+  Optional<Board> getBoardByGuildIdAndNameAndShared(Long guildId, String name, boolean shared);
 
   @Query("SELECT b FROM Board b WHERE b.name=:name AND b.pending=false AND b.shared=:shared")
   Optional<Board> getEntryForRemoval(String name, boolean shared);
 
-  @Query(value = "SELECT * FROM board WHERE guild_id=:guildId AND shared=0 ORDER BY level DESC LIMIT :limit", nativeQuery = true)
+  @Query(value = "SELECT * FROM board WHERE guild_id=:guildId AND shared=0 AND pending=0 ORDER BY level DESC LIMIT :limit", nativeQuery = true)
   List<Board> findTopByGuildId(Long guildId, Integer limit);
 
-  @Query(value = "SELECT * FROM board WHERE shared=1 ORDER BY level DESC LIMIT :limit", nativeQuery = true)
+  @Query(value = "SELECT * FROM board WHERE shared=1 AND pending=0 ORDER BY level DESC LIMIT :limit", nativeQuery = true)
   List<Board> findTopAll(Integer limit);
 
-  @Query(value = "SELECT * FROM board WHERE guild_id=:guildId AND shared=0 AND level=119989", nativeQuery = true)
+  @Query(value = "SELECT * FROM board WHERE guild_id=:guildId AND shared=0 AND level=119989 AND pending=0", nativeQuery = true)
   List<Board> findMaxLevelByGuildId(Long guildId);
 
-  @Query(value = "SELECT * FROM board WHERE shared=1 AND level=119989", nativeQuery = true)
+  @Query(value = "SELECT * FROM board WHERE shared=1 AND level=119989 AND pending=0", nativeQuery = true)
   List<Board> findMaxLevelAll();
 
   @Query(value = "SELECT * FROM board WHERE pending=0 AND processed=0", nativeQuery = true)

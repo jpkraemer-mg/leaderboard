@@ -33,11 +33,10 @@ public class AcceptSubmitButtonListener extends ListenerAdapter {
       return;
     }
     var embed = e.getMessage().getEmbeds().get(0);
-    var existing = boardService.getBoardByGuildIdAndNameAndSharedAndPending(
+    var existing = boardService.getBoardByGuildIdAndNameAndShared(
         e.getGuild().getIdLong(),
         embed.getFields().get(0).getValue(),
-        embed.getTitle().toLowerCase().contains("global"),
-        false
+        embed.getTitle().toLowerCase().contains("global")
     );
     Board b;
     if (existing.isPresent()) {

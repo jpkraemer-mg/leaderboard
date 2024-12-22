@@ -33,10 +33,8 @@ public class BoardService {
     return boardRepository.findBoardById(boardId);
   }
 
-  public Optional<Board> getBoardByGuildIdAndNameAndSharedAndPending(Long guildId, String name,
-      boolean shared, boolean pending) {
-    return boardRepository.getBoardByGuildIdAndNameAndSharedAndPending(guildId, name, shared,
-        pending);
+  public Optional<Board> getBoardByGuildIdAndNameAndShared(Long guildId, String name, boolean shared) {
+    return boardRepository.getBoardByGuildIdAndNameAndShared(guildId, name, shared);
   }
 
   public List<Board> findTopEntriesByGuildId(Long guildId, int limit) {
