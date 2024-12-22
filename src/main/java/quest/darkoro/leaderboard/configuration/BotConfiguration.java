@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDA.Status;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,32 @@ public class BotConfiguration {
         .build();
 
     try {
+      jda.awaitStatus(Status.INITIALIZING);
+      log.info("INITIALIZING JDA");
+
+      jda.awaitStatus(Status.INITIALIZED);
+      log.info("INITIALIZED JDA");
+
+      jda.awaitStatus(Status.LOGGING_IN);
+      log.info("BOT LOGGING IN");
+
+      jda.awaitStatus(Status.CONNECTING_TO_WEBSOCKET);
+      log.info("Connecting to WebSocket");
+
+      jda.awaitStatus(Status.IDENTIFYING_SESSION);
+      log.info("IDENTIFYING SESSION");
+
+      jda.awaitStatus(Status.AWAITING_LOGIN_CONFIRMATION);
+      log.info("WAITING FOR LOGIN CONFIRMATION");
+
+      jda.awaitStatus(Status.LOADING_SUBSYSTEMS);
+      log.info("LOADING SUBSYSTEMS");
+
+      jda.awaitStatus(Status.CONNECTED);
+      log.info("CONNECTED");
+
       jda.awaitReady();
+      log.info("BOT READY");
     } catch (InterruptedException e) {
       log.error("Error while initializing JDA", e);
       Thread.currentThread().interrupt();
