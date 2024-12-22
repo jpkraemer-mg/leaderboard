@@ -20,7 +20,7 @@ public class SubmitCommand implements BaseCommand {
   public SlashCommandData create() {
     var a = List.of(
         new OptionData(STRING, "username", "Your username").setRequired(true),
-        new OptionData(INTEGER, "level", "Your current level").setRequired(true),
+        new OptionData(INTEGER, "level", "Your current level").setRequired(true).setMinValue(1).setMaxValue(119989),
         new OptionData(ATTACHMENT, "proof",
             "A screenshot of your current level as proof").setRequired(true)
     );

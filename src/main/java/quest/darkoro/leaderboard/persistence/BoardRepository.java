@@ -23,10 +23,10 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
   @Query("SELECT b FROM Board b WHERE b.name=:name AND b.pending=false AND b.shared=:shared")
   Optional<Board> getEntryForRemoval(String name, boolean shared);
 
-  @Query(value = "SELECT * FROM board WHERE guild_id=:guildId AND shared=0 AND pending=0 ORDER BY level DESC LIMIT :limit", nativeQuery = true)
+  @Query(value = "SELECT * FROM board WHERE guild_id=:guildId AND shared=0 AND pending=0 AND level < 119989 ORDER BY level DESC LIMIT :limit", nativeQuery = true)
   List<Board> findTopByGuildId(Long guildId, Integer limit);
 
-  @Query(value = "SELECT * FROM board WHERE shared=1 AND pending=0 ORDER BY level DESC LIMIT :limit", nativeQuery = true)
+  @Query(value = "SELECT * FROM board WHERE shared=1 AND pending=0 AND level < 119989 ORDER BY level DESC LIMIT :limit", nativeQuery = true)
   List<Board> findTopAll(Integer limit);
 
   @Query(value = "SELECT * FROM board WHERE guild_id=:guildId AND shared=0 AND level=119989 AND pending=0", nativeQuery = true)
@@ -35,11 +35,19 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
   @Query(value = "SELECT * FROM board WHERE shared=1 AND level=119989 AND pending=0", nativeQuery = true)
   List<Board> findMaxLevelAll();
 
-  @Query(value = "SELECT * FROM board WHERE pending=0 AND processed=0", nativeQuery = true)
-  List<Board> findUnprocessed();
+  @Query(value = "SELECT * FROM board WHERE pending=0 AND processed=0 AND shared=1", nativeQuery = true)
+  List<Board> findUnprocessedShared();
 
-  @Query(value = "UPDATE board SET processed=1 WHERE pending=0 AND processed=0", nativeQuery = true)
+  @Query(value = "SELECT * FROM board WHERE pending=0 AND processed=0 AND guild_id=:guildId", nativeQuery = true)
+  List<Board> findUnprocessedByGuildId(Long guildId);
+
+  @Query(value = "UPDATE board SET processed=1 WHERE pending=0 AND processed=0 AND shared=1", nativeQuery = true)
   @Modifying
   @Transactional
-  void setProcessed();
+  void setProcessedShared();
+
+  @Query(value = "UPDATE board SET processed=1 WHERE pending=0 AND processed=0 AND guild_id=:guildId", nativeQuery = true)
+  @Modifying
+  @Transactional
+  void setProcessedByGuildId(Long guildId);
 }

@@ -29,19 +29,18 @@ public class BotReadyListener extends ListenerAdapter {
   @Override
   public void onReady(ReadyEvent e) {
     var bot = e.getJDA();
-    Objects.requireNonNull(
-            bot
-                .getGuildById("1114331993640017980")
-        )
-        .updateCommands()
+    bot.getGuilds().forEach(g ->
+        g.updateCommands()
         .addCommands(commands.stream().map(BaseCommand::create).toList())
         .queue(
-            s -> log.info("Registered commands successfully: {}",
+            s -> log.info("Registered commands for guild {} successfully: {}",
+                g.getName(),
                 commands.stream()
                     .map(c -> c.create().getName())
                     .toList()),
             error -> log.error("Failed to register commands", error)
-        );
+        )
+    );
     var annotations = List.of(PrimaryListener.class, SecondaryListener.class, TertiaryListener.class);
     annotations.forEach(a -> {
       applicationContext.getBeansWithAnnotation(a)

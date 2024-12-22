@@ -1,9 +1,6 @@
 package quest.darkoro.leaderboard.listener.command;
 
-import static net.dv8tion.jda.api.Permission.MESSAGE_ATTACH_FILES;
-import static net.dv8tion.jda.api.Permission.MESSAGE_SEND;
-import static net.dv8tion.jda.api.Permission.NICKNAME_CHANGE;
-import static net.dv8tion.jda.api.Permission.VIEW_CHANNEL;
+import static net.dv8tion.jda.api.Permission.ADMINISTRATOR;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +21,7 @@ public class InviteCommandListener extends ListenerAdapter {
     if (!e.getName().equals("invite") || e.isAcknowledged()) {
       return;
     }
-    var link = e.getJDA().getInviteUrl(MESSAGE_ATTACH_FILES, MESSAGE_SEND, NICKNAME_CHANGE, VIEW_CHANNEL);
+    var link = e.getJDA().getInviteUrl(ADMINISTRATOR);
     e.reply("Invite the bot to your own server!")
         .addActionRow(Button.link(link, "Invite"))
         .setEphemeral(true)

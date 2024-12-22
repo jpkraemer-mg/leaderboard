@@ -53,12 +53,10 @@ public class RemoveCommandListener extends ListenerAdapter {
       return;
     }
     var entry = board.get();
-    e.reply(prepareMessage(e.getJDA(), entry, global)).queue();
-//    if (global) {
-//      e.reply("Global not implemented").setEphemeral(true).queue();
-//    } else {
-//      e.reply("Faction not implemented").setEphemeral(true).queue();
-//    }
+    var channel = e.getJDA().getTextChannelById(
+        guildService.getGuildByGuildId(entry.getGuildId()).get().getSubmissionChannelId());
+    channel.sendMessage(prepareMessage(e.getJDA(), entry, global)).queue();
+    e.reply("Your removal request was sucessfully sent!").setEphemeral(true).queue();
   }
 
   private MessageEmbed prepareEmbed(Board b, boolean global) {
@@ -79,8 +77,8 @@ public class RemoveCommandListener extends ListenerAdapter {
             Button.danger("deny_remove", Emoji.fromUnicode("\uD83D\uDEAB"))
         )
         .addContent(String.format("<@&%s>",
-            bot.getGuildById(b.getGuildId()).getRoleById(
-                guildService.getGuildByGuildId(b.getGuildId()).get().getPermitted()).getId()
+                bot.getGuildById(b.getGuildId()).getRoleById(
+                    guildService.getGuildByGuildId(b.getGuildId()).get().getPermitted()).getId()
             )
         )
         .build();

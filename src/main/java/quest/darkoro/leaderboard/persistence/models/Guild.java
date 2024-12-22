@@ -30,4 +30,10 @@ public class Guild {
 
   @Column
   private Integer top;
+
+  @Column
+  private Long global;
+
+  @Column
+  private Long faction;
 }

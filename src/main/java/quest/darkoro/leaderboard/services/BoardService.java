@@ -45,16 +45,28 @@ public class BoardService {
     return boardRepository.findMaxLevelByGuildId(guildId);
   }
 
+  public List<Board> findTopAll(Integer limit) {
+    return boardRepository.findTopAll(limit);
+  }
+
   public List<Board> findMaxAll() {
     return boardRepository.findMaxLevelAll();
   }
 
-  public List<Board> findUnprocessed() {
-    return boardRepository.findUnprocessed();
+  public List<Board> findUnprocessedShared() {
+    return boardRepository.findUnprocessedShared();
   }
 
-  public void setProcessed() {
-    boardRepository.setProcessed();
+  public List<Board> findUnprocessedByGuildId(Long guildId) {
+    return boardRepository.findUnprocessedByGuildId(guildId);
+  }
+
+  public void setProcessedShared() {
+    boardRepository.setProcessedShared();
+  }
+
+  public void setProcessedByGuildId(Long guildId) {
+    boardRepository.setProcessedByGuildId(guildId);
   }
 
   public Optional<Board> getEntryForRemoval(String name, boolean global) {
