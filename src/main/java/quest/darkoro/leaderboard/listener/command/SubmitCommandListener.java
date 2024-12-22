@@ -12,13 +12,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
-import org.springframework.stereotype.Service;
 import quest.darkoro.leaderboard.annotations.SecondaryListener;
 import quest.darkoro.leaderboard.persistence.models.Board;
 import quest.darkoro.leaderboard.services.BoardService;
 import quest.darkoro.leaderboard.services.GuildService;
 
-@Service
 @Slf4j
 @RequiredArgsConstructor
 @SecondaryListener
