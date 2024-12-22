@@ -21,6 +21,9 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
   Optional<Board> getBoardByGuildIdAndNameAndSharedAndPending(Long guildId, String name,
       boolean shared, boolean pending);
 
+  @Query("SELECT b FROM Board b WHERE b.name=:name AND b.pending=false AND b.shared=:shared")
+  Optional<Board> getEntryForRemoval(String name, boolean shared);
+
   @Query(value = "SELECT * FROM board WHERE guild_id=:guildId AND shared=0 ORDER BY level DESC LIMIT :limit", nativeQuery = true)
   List<Board> findTopByGuildId(Long guildId, Integer limit);
 

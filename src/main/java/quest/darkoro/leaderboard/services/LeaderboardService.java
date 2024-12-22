@@ -1,16 +1,16 @@
 package quest.darkoro.leaderboard.services;
 
+import java.awt.Color;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,9 @@ public class LeaderboardService {
   private final GuildService guildService;
   private final BoardService boardService;
 
+  @Value("${quest.darkoro.board.max}")
+  private int max;
+
   @Scheduled(fixedRate = 60000L)
   public void updateLeaderboards() {
     var guilds = guildService.getAllGuilds();
@@ -37,7 +40,6 @@ public class LeaderboardService {
     ).forEach(
         guild -> {
           var check = guildService.getGuildByGuildId(guild.getIdLong()).get();
-          int max = 15;
           int limit =
               (check.getTop() == null || check.getTop() < 1) ? max : Math.min(check.getTop(), max);
           var entries = boardService.findTopEntriesByGuildId(guild.getIdLong(), limit);
@@ -56,7 +58,9 @@ public class LeaderboardService {
     var newEntries = boardService.findUnprocessed();
     List<Long> guilds = new ArrayList<>();
     for (Board entry : newEntries) {
-        if (!guilds.contains(entry.getGuildId())) guilds.add(entry.getGuildId());
+      if (!guilds.contains(entry.getGuildId())) {
+        guilds.add(entry.getGuildId());
+      }
     }
     log.info("Found {} guild updates", guilds.size());
     if (!newEntries.isEmpty()) {
@@ -78,9 +82,12 @@ public class LeaderboardService {
 
   public EmbedBuilder prepareEmbed(boolean shared, Guild guild) {
     return new EmbedBuilder()
-        .setColor(0x00FF00)
-        .setTitle(String.format((shared ? "Public " : "") + "Leaderboard - Updated <t:%s:R>",
-            Instant.now().getEpochSecond()))
+        .setColor(Color.GREEN)
+        .setTitle(String.format(
+            "%sLeaderboard - Updated <t:%s:R>",
+            shared ? "Global " : "",
+            Instant.now().getEpochSecond()
+        ))
         .setFooter(String.format("Leaderboard Bot - %s", guild.getName()));
   }
 

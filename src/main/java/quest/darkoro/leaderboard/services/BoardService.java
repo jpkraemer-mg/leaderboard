@@ -58,4 +58,8 @@ public class BoardService {
   public void setProcessed() {
     boardRepository.setProcessed();
   }
+
+  public Optional<Board> getEntryForRemoval(String name, boolean global) {
+    return boardRepository.getEntryForRemoval(name, global);
+  }
 }

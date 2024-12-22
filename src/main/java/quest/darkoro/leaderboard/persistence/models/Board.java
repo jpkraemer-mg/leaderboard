@@ -35,7 +35,7 @@ public class Board {
   private boolean shared;
 
   @Column
-  private boolean pending;
+  private boolean pending = true;
 
   @Column
   private boolean processed = false;

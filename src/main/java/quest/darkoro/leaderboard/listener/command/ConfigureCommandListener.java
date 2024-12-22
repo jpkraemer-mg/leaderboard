@@ -1,7 +1,5 @@
 package quest.darkoro.leaderboard.listener.command;
 
-import static net.dv8tion.jda.api.interactions.DiscordLocale.GERMAN;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -21,25 +19,25 @@ public class ConfigureCommandListener extends ListenerAdapter {
 
   @Override
   public void onSlashCommandInteraction(SlashCommandInteractionEvent e) {
-    if (!e.getName().matches("configure|konfiguration") || e.isAcknowledged()) {
+    if (!e.getName().equals("configure") || e.isAcknowledged()) {
       return;
     }
     if (e.getSubcommandName().equals("server")) {
       handleConfigureServer(e);
+      return;
     }
     if (e.getSubcommandName().equals("profile")) {
       handleConfigureProfile(e);
+      return;
     }
     e.reply(String.format("Unknown subcommand '%s'", e.getSubcommandName()));
   }
 
   private void handleConfigureServer(SlashCommandInteractionEvent e) {
-    var l = e.getOption(e.getUserLocale() != GERMAN ? "leaderboards" : "bestenlisten")
-        .getAsChannel();
-    var s = e.getOption(e.getUserLocale() != GERMAN ? "submissions" : "einreichungen")
-        .getAsChannel();
+    var l = e.getOption("leaderboards").getAsChannel();
+    var s = e.getOption("submissions").getAsChannel();
     var limit = e.getOption("limit");
-    guildService.saveGuild(
+    var g = guildService.saveGuild(
         new Guild()
             .setGuildId(e.getGuild().getIdLong())
             .setName(e.getGuild().getName())
@@ -48,12 +46,8 @@ public class ConfigureCommandListener extends ListenerAdapter {
             .setPermitted(e.getOption("permitted").getAsRole().getIdLong())
             .setTop(limit != null && limit.getAsInt() > 0 ? limit.getAsInt() : -1)
     );
-    log.info("(Re)configured guild '{}' with board channel '{}' and submission channel '{}'",
-        e.getGuild().getName(), l.getName(), s.getName());
-    if (e.getUserLocale() == GERMAN) {
-      e.reply("Konfiguration erfolgreich!").setEphemeral(true).queue();
-      return;
-    }
+    log.info("(Re)configured guild '{}' with channels '{}' | '{}' and limit '{}'",
+        e.getGuild().getName(), l.getName(), s.getName(), g.getTop());
     e.reply("Configuration successful!").setEphemeral(true).queue();
   }
 
