@@ -160,7 +160,7 @@ public class LeaderboardService {
     entries.forEach(e -> {
       var g = guildService.getGuildByGuildId(e.getGuildId()).get();
       sb.append(String.format(
-          "`%-" + nameLength + "s`" + (global ? " | `%" + levelLength + "s`" : "") + " | %," + levelLength + "d\n",
+          "`%-" + nameLength + "s`" + (global ? " | `%" + levelLength + "s`" : "") + " | %," + levelLength + "d" + "\n",
           e.getName(),
           g.getName(),
           e.getLevel()
