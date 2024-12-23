@@ -23,7 +23,7 @@ public class BotConfiguration {
 
   @Bean
   public JDA bot() {
-    log.info("Initializing JDA");
+    log.debug("Preparing JDA");
     return JDABuilder
         .createLight(token, EnumSet.allOf(GatewayIntent.class))
         .addEventListeners(botReadyListener)

@@ -54,7 +54,7 @@ public class ConfigureCommandListener extends ListenerAdapter {
   private void handleConfigureProfile(SlashCommandInteractionEvent e) {
     e.getGuild().getSelfMember().modifyNickname(e.getOption("name").getAsString()).queue();
     e.reply("Successfully updated nickname!").setEphemeral(true).queue();
-    log.info("Successfully updated nickname for guild '{}' ({}) to '{}'",
+    log.debug("Successfully updated nickname for guild '{}' ({}) to '{}'",
         e.getGuild().getId(),
         e.getGuild().getName(),
         e.getOption("name").getAsString());

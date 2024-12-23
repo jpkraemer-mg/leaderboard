@@ -32,7 +32,7 @@ public class LeaderboardService {
 
   @Scheduled(fixedRate = 15000L)
   public void scanNew() {
-    log.info("Scanning...");
+    log.debug("Scanning...");
     var guilds = guildService.getAllGuilds();
     bot.getGuilds().stream().filter(
         guild -> guilds.stream().anyMatch(
@@ -79,7 +79,7 @@ public class LeaderboardService {
 
   private void updateLeaderboard(Guild check, List<Board> entries,
       net.dv8tion.jda.api.entities.Guild guild, List<Board> entriesMax) {
-    log.info("Updating leaderboard in Guild {} ({})", guild.getName(), guild.getId());
+    log.debug("Updating leaderboard in Guild {} ({})", guild.getName(), guild.getId());
     var channel = bot.getTextChannelById(check.getChannelId());
     var gid = check.getGlobal();
     var fid = check.getFaction();
