@@ -154,13 +154,14 @@ public class LeaderboardService {
 
   private String generate(List<Board> entries, boolean global) {
     int nameLength = entries.stream().mapToInt(e -> e.getName().length()).max().orElse(0);
+    int guildLength = entries.stream().mapToInt(e -> bot.getGuildById(e.getGuildId()).getName().length()).max().orElse(0);
     int levelLength = entries.stream().mapToInt(e -> String.format("%,d", e.getLevel()).length())
         .max().orElse(0);
     StringBuilder sb = new StringBuilder();
     entries.forEach(e -> {
       var g = guildService.getGuildByGuildId(e.getGuildId()).get();
       sb.append(String.format(
-          "`%-" + nameLength + "s`" + (global ? " | `%" + levelLength + "s`" : "") + " | %," + levelLength + "d" + "\n",
+          "`%-" + nameLength + "s`" + (global ? " | `%" + guildLength + "s`" : "") + " | %," + levelLength + "d" + "\n",
           e.getName(),
           g.getName(),
           e.getLevel()
