@@ -160,10 +160,10 @@ public class LeaderboardService {
     entries.forEach(e -> {
       var g = guildService.getGuildByGuildId(e.getGuildId()).get();
       sb.append(String.format(
-          "`%-" + nameLength + "s` | %," + levelLength + "d" + (global ? " | %s" : "") + "\n",
+          "`%-" + nameLength + "s`" + (global ? " | `%" + levelLength + "s`" : "") + " | %," + levelLength + "d\n",
           e.getName(),
-          e.getLevel(),
-          g.getName()
+          g.getName(),
+          e.getLevel()
       ));
     });
     return sb.toString();
