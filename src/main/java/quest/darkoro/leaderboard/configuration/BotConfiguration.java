@@ -23,42 +23,10 @@ public class BotConfiguration {
 
   @Bean
   public JDA bot() {
-    JDA jda = JDABuilder
+    log.info("Initializing JDA");
+    return JDABuilder
         .createLight(token, EnumSet.allOf(GatewayIntent.class))
         .addEventListeners(botReadyListener)
         .build();
-
-    try {
-      jda.awaitStatus(Status.INITIALIZING);
-      log.info("INITIALIZING JDA");
-
-      jda.awaitStatus(Status.INITIALIZED);
-      log.info("INITIALIZED JDA");
-
-      jda.awaitStatus(Status.LOGGING_IN);
-      log.info("BOT LOGGING IN");
-
-      jda.awaitStatus(Status.CONNECTING_TO_WEBSOCKET);
-      log.info("Connecting to WebSocket");
-
-      jda.awaitStatus(Status.IDENTIFYING_SESSION);
-      log.info("IDENTIFYING SESSION");
-
-      jda.awaitStatus(Status.AWAITING_LOGIN_CONFIRMATION);
-      log.info("WAITING FOR LOGIN CONFIRMATION");
-
-      jda.awaitStatus(Status.LOADING_SUBSYSTEMS);
-      log.info("LOADING SUBSYSTEMS");
-
-      jda.awaitStatus(Status.CONNECTED);
-      log.info("CONNECTED");
-
-      jda.awaitReady();
-      log.info("BOT READY");
-    } catch (InterruptedException e) {
-      log.error("Error while initializing JDA", e);
-      Thread.currentThread().interrupt();
-    }
-    return jda;
   }
 }
