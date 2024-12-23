@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 import quest.darkoro.leaderboard.interfaces.BaseCommand;
 
 @Component
-public class InviteCommand implements BaseCommand {
+public class LinksCommand implements BaseCommand {
 
   @Override
   public CommandData create() {
-    return Commands.slash("invite", "Invite the bot to your server!")
+    return Commands.slash("links", "Get some useful links!")
         .setGuildOnly(false)
         .setDefaultPermissions(ENABLED);
   }
