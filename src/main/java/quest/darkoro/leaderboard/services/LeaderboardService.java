@@ -81,7 +81,7 @@ public class LeaderboardService {
       net.dv8tion.jda.api.entities.Guild guild, List<Board> entriesMax) {
     log.info("Updating leaderboard in Guild {} ({})", guild.getName(), guild.getId());
     var tchannel = bot.getTextChannelById(check.getChannelId());
-    var nchannel = bot.getTextChannelById(check.getChannelId());
+    var nchannel = bot.getNewsChannelById(check.getChannelId());
     var channel = tchannel == null ? nchannel : tchannel;
     log.info("ID: {} | Channel: {}", check.getChannelId(), channel);
     var gid = check.getGlobal();
