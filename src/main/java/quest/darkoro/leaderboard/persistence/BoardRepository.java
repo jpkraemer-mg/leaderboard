@@ -46,7 +46,7 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
   @Transactional
   void setProcessedShared();
 
-  @Query(value = "UPDATE board SET processed=1 WHERE pending=0 AND processed=0 AND guild_id=:guildId", nativeQuery = true)
+  @Query(value = "UPDATE board SET processed=1 WHERE pending=0 AND processed=0", nativeQuery = true)
   @Modifying
   @Transactional
   void setProcessedByGuildId(Long guildId);
