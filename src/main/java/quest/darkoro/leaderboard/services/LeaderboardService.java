@@ -52,7 +52,7 @@ public class LeaderboardService {
 
   @Scheduled(fixedRate = 1800000L)
   public void forceRenew() {
-    log.info("Hourly leaderboard renewal");
+    log.info("Bi-Hourly leaderboard renewal");
     var guilds = guildService.getAllGuilds();
     bot.getGuilds().stream().filter(
         guild -> guilds.stream().anyMatch(
@@ -80,7 +80,9 @@ public class LeaderboardService {
   private void updateLeaderboard(Guild check, List<Board> entries,
       net.dv8tion.jda.api.entities.Guild guild, List<Board> entriesMax) {
     log.info("Updating leaderboard in Guild {} ({})", guild.getName(), guild.getId());
-    var channel = bot.getTextChannelById(check.getChannelId());
+    var tchannel = bot.getTextChannelById(check.getChannelId());
+    var nchannel = bot.getTextChannelById(check.getChannelId());
+    var channel = tchannel == null ? nchannel : tchannel;
     log.info("ID: {} | Channel: {}", check.getChannelId(), channel);
     var gid = check.getGlobal();
     var fid = check.getFaction();
