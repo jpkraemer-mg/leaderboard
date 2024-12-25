@@ -79,8 +79,9 @@ public class LeaderboardService {
 
   private void updateLeaderboard(Guild check, List<Board> entries,
       net.dv8tion.jda.api.entities.Guild guild, List<Board> entriesMax) {
-    log.debug("Updating leaderboard in Guild {} ({})", guild.getName(), guild.getId());
+    log.info("Updating leaderboard in Guild {} ({})", guild.getName(), guild.getId());
     var channel = bot.getTextChannelById(check.getChannelId());
+    log.info("ID: {} | Channel: {}", check.getChannelId(), channel);
     var gid = check.getGlobal();
     var fid = check.getFaction();
     var globalUpdated = false;
