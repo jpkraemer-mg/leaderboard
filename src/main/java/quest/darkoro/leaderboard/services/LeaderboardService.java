@@ -147,11 +147,10 @@ public class LeaderboardService {
             Instant.now().getEpochSecond()))
         .setFooter(String.format("Leaderboard Bot - %s", guildName))
         .setColor(YELLOW);
-
-    embed.addField(String.format("Max players (%d)", entriesMax.size()),
-        generate(entriesMax, global),
-        false);
-    embed.addField(String.format("Top %s players", max), generate(entriesTop, global), false);
+    var maxList = generate(entriesMax, global);
+    var topList = generate(entriesTop, global);
+    addFields(embed, maxList, "Max players (%d)".formatted(entriesMax.size()));
+    addFields(embed, topList, "Top %d players".formatted(max));
     return embed.build();
   }
 
@@ -171,5 +170,27 @@ public class LeaderboardService {
       ));
     });
     return sb.toString();
+  }
+
+  private void addFields(EmbedBuilder embed, String content, String title) {
+    int length = 1024;
+
+    String[] parts = content.split("\n");
+    StringBuilder currentField = new StringBuilder();
+
+    for (String part : parts) {
+      if (currentField.length() + part.length() + 1 > length) {
+        embed.addField(title, currentField.toString(), false);
+        currentField = new StringBuilder();
+      }
+      if (!currentField.isEmpty()) {
+        currentField.append("\n");
+      }
+      currentField.append(part);
+    }
+
+    if (!currentField.isEmpty()) {
+      embed.addField(title, currentField.toString(), false);
+    }
   }
 }
