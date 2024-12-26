@@ -156,7 +156,12 @@ public class LeaderboardService {
 
   private String generate(List<Board> entries, boolean global) {
     int nameLength = entries.stream().mapToInt(e -> e.getName().length()).max().orElse(0);
-    int guildLength = entries.stream().mapToInt(e -> bot.getGuildById(e.getGuildId()).getName().length()).max().orElse(0);
+    int guildLength = entries.stream()
+        .mapToInt(e -> guildService.getGuildByGuildId(e.getGuildId())
+            .map(guild -> guild.getName().length())
+            .orElse(0))
+        .max()
+        .orElse(0);
     int levelLength = entries.stream().mapToInt(e -> String.format("%,d", e.getLevel()).length())
         .max().orElse(0);
     StringBuilder sb = new StringBuilder();
