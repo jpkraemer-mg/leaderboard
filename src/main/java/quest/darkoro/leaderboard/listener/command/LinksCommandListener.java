@@ -33,7 +33,6 @@ public class LinksCommandListener extends ListenerAdapter {
             Button.link(link, "Invite"),
             Button.link(omnitool, "Omnitool"),
             Button.link(trello, "Trello"))
-        .setEphemeral(true)
         .queue();
   }
 }
