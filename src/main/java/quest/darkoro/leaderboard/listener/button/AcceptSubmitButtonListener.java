@@ -59,6 +59,7 @@ public class AcceptSubmitButtonListener extends ListenerAdapter {
     }
     e.editMessageEmbeds(
             new EmbedBuilder()
+                .setTitle(embed.getTitle())
                 .setFooter(
                     String.format("Submission accepted by %s - %s",
                         e.getUser().getEffectiveName(),
