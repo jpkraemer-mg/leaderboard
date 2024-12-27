@@ -26,9 +26,15 @@ public class LeaderboardService {
   private final JDA bot;
   private final GuildService guildService;
   private final BoardService boardService;
+  private final RegisterService registerService;
 
   @Value("${quest.darkoro.board.max}")
   private int max;
+
+  @Scheduled(initialDelay = 300000L, fixedRate = 900000L)
+  public void guildCheck() {
+    registerService.registerCommands(bot);
+  }
 
   @Scheduled(fixedRate = 15000L)
   public void scanNew() {
@@ -97,9 +103,9 @@ public class LeaderboardService {
           },
           error -> {
             var embed = createOrUpdate(entries, guild.getName(), entriesMax, true);
-            channel.sendMessageEmbeds(embed).queue(msg -> {
-              guildService.saveGuild(check.setGlobal(msg.getIdLong()));
-            });
+            channel.sendMessageEmbeds(embed).queue(msg ->
+                guildService.saveGuild(check.setGlobal(msg.getIdLong()))
+            );
           });
       globalUpdated = true;
     }
@@ -112,9 +118,9 @@ public class LeaderboardService {
           },
           error -> {
             var embed = createOrUpdate(entries, guild.getName(), entriesMax, false);
-            channel.sendMessageEmbeds(embed).queue(msg -> {
-              guildService.saveGuild(check.setFaction(msg.getIdLong()));
-            });
+            channel.sendMessageEmbeds(embed).queue(msg ->
+              guildService.saveGuild(check.setFaction(msg.getIdLong()))
+            );
           });
       updated = true;
     }
