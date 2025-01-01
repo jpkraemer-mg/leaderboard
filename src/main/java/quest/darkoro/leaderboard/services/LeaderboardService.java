@@ -76,11 +76,14 @@ public class LeaderboardService {
   private Pair<List<Board>, List<Board>> getEntriesAndMax(
       net.dv8tion.jda.api.entities.Guild guild) {
     var check = guildService.getGuildByGuildId(guild.getIdLong()).get();
-    int limit =
-        (check.getTop() == null || check.getTop() < 1) ? max : Math.min(check.getTop(), max);
+    int limit = getLimit(check);
     var entries = boardService.findTopEntriesByGuildId(guild.getIdLong(), limit);
     var entriesMax = boardService.findMaxLevelByGuildId(guild.getIdLong());
     return Pair.of(entries, entriesMax);
+  }
+
+  private int getLimit(Guild check) {
+    return (check.getTop() == null || check.getTop() < 1) ? max : Math.min(check.getTop(), max);
   }
 
   private void updateLeaderboard(Guild check, List<Board> entries,
@@ -89,7 +92,7 @@ public class LeaderboardService {
     var tchannel = bot.getTextChannelById(check.getChannelId());
     var nchannel = bot.getNewsChannelById(check.getChannelId());
     var channel = tchannel == null ? nchannel : tchannel;
-    log.info("ID: {} | Channel: {}", check.getChannelId(), channel);
+    log.debug("ID: {} | Channel: {}", check.getChannelId(), channel);
     var gid = check.getGlobal();
     var fid = check.getFaction();
     var globalUpdated = false;
@@ -97,12 +100,12 @@ public class LeaderboardService {
     if (gid != null) {
       channel.retrieveMessageById(gid).queue(msg -> {
             if (msg.getAuthor().getId().equals(bot.getSelfUser().getId())) {
-              var embed = createOrUpdate(entries, guild.getName(), entriesMax, true);
+              var embed = createOrUpdate(entries, guild.getName(), entriesMax, true, check);
               msg.editMessageEmbeds(embed).queue();
             }
           },
           error -> {
-            var embed = createOrUpdate(entries, guild.getName(), entriesMax, true);
+            var embed = createOrUpdate(entries, guild.getName(), entriesMax, true, check);
             channel.sendMessageEmbeds(embed).queue(msg ->
                 guildService.saveGuild(check.setGlobal(msg.getIdLong()))
             );
@@ -112,12 +115,12 @@ public class LeaderboardService {
     if (fid != null) {
       channel.retrieveMessageById(fid).queue(msg -> {
             if (msg.getAuthor().getId().equals(bot.getSelfUser().getId())) {
-              var embed = createOrUpdate(entries, guild.getName(), entriesMax, false);
+              var embed = createOrUpdate(entries, guild.getName(), entriesMax, false, check);
               msg.editMessageEmbeds(embed).queue();
             }
           },
           error -> {
-            var embed = createOrUpdate(entries, guild.getName(), entriesMax, false);
+            var embed = createOrUpdate(entries, guild.getName(), entriesMax, false, check);
             channel.sendMessageEmbeds(embed).queue(msg ->
               guildService.saveGuild(check.setFaction(msg.getIdLong()))
             );
@@ -126,14 +129,14 @@ public class LeaderboardService {
     }
 
     if (!globalUpdated) {
-      var globalEmbed = createOrUpdate(entries, guild.getName(), entriesMax, true);
+      var globalEmbed = createOrUpdate(entries, guild.getName(), entriesMax, true, check);
       channel.sendMessageEmbeds(globalEmbed).queue(msg ->
           guildService.saveGuild(check.setGlobal(msg.getIdLong()))
       );
     }
 
     if (!updated) {
-      var privateEmbed = createOrUpdate(entries, guild.getName(), entriesMax, false);
+      var privateEmbed = createOrUpdate(entries, guild.getName(), entriesMax, false, check);
       channel.sendMessageEmbeds(privateEmbed).queue(msg ->
           guildService.saveGuild(check.setFaction(msg.getIdLong()))
       );
@@ -143,9 +146,10 @@ public class LeaderboardService {
   }
 
   private MessageEmbed createOrUpdate(List<Board> entriesTop, String guildName,
-      List<Board> entriesMax, boolean global) {
+      List<Board> entriesMax, boolean global, Guild check) {
+    var limit = getLimit(check);
     if (global) {
-      entriesTop = boardService.findTopAll(max);
+      entriesTop = boardService.findTopAll(limit);
       entriesMax = boardService.findMaxAll();
     }
     var embed = new EmbedBuilder()
@@ -156,7 +160,7 @@ public class LeaderboardService {
     var maxList = generate(entriesMax, global);
     var topList = generate(entriesTop, global);
     addFields(embed, maxList, "Max players (%d)".formatted(entriesMax.size()));
-    addFields(embed, topList, "Top %d players".formatted(max));
+    addFields(embed, topList, "Top %d players".formatted(limit));
     return embed.build();
   }
 
