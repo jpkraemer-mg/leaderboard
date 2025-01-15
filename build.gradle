@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'quest.darkoro'
-version = '0.5.2'
+version = '0.6.0'
 
 
 java {
@@ -31,6 +31,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 	implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
 	implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.26'
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
