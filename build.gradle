@@ -85,6 +85,10 @@ tasks.register('openApiGenerateJavaSpring', GenerateTask) {
 }
 tasks.compileJava.dependsOn('openApiGenerateJavaSpring')
 
+tasks.test {
+	useJUnitPlatform()
+}
+
 tasks.bootRun {
 	args '--spring.profiles.active=dev'
 }

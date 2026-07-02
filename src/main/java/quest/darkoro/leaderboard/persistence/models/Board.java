@@ -18,6 +18,11 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class Board {
 
+  /**
+   * Highest reachable level; entries at this cap are listed separately from the top ranking.
+   */
+  public static final int MAX_LEVEL = 119989;
+
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;

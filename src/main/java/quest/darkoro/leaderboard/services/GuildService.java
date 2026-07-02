@@ -3,7 +3,6 @@ package quest.darkoro.leaderboard.services;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import quest.darkoro.leaderboard.persistence.GuildRepository;
 import quest.darkoro.leaderboard.persistence.models.Guild;
@@ -26,12 +25,12 @@ public class GuildService {
     return guildRepository.findAll();
   }
 
-  public ResponseEntity<Void> deleteGuildByGuildId(Long guildId) {
+  public boolean deleteGuildByGuildId(Long guildId) {
     return guildRepository.getGuildByGuildId(guildId)
         .map(guild -> {
           guildRepository.delete(guild);
-          return ResponseEntity.noContent().<Void>build();
+          return true;
         })
-        .orElse(ResponseEntity.accepted().build());
+        .orElse(false);
   }
 }

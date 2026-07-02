@@ -26,9 +26,19 @@ public class AcceptSubmitButtonListener extends ListenerAdapter {
     if (e.isAcknowledged() || !e.getButton().getId().equals("accept_submit")) {
       return;
     }
-    var permitted = e.getGuild()
-        .getRoleById(guildService.getGuildByGuildId(e.getGuild().getIdLong()).get().getPermitted());
-    if (!e.getGuild().retrieveMemberById(e.getUser().getId()).complete().getRoles().contains(permitted)) {
+    var guildConfig = guildService.getGuildByGuildId(e.getGuild().getIdLong());
+    if (guildConfig.isEmpty()) {
+      e.reply("This server is no longer configured!\nUse `/configure server` first.")
+          .setEphemeral(true).queue();
+      return;
+    }
+    var permitted = e.getGuild().getRoleById(guildConfig.get().getPermitted());
+    if (permitted == null) {
+      e.reply("The configured moderator role no longer exists!\nUse `/configure server` to set a new one.")
+          .setEphemeral(true).queue();
+      return;
+    }
+    if (!e.getMember().getRoles().contains(permitted)) {
       e.reply("You don't have permission to accept this submission!").setEphemeral(true).queue();
       return;
     }
@@ -51,14 +61,16 @@ public class AcceptSubmitButtonListener extends ListenerAdapter {
         );
       }
     } else {
-      b = boardService.saveBoard(
-          boardService.getBoardById(
-                  UUID.fromString(embed.getFields().get(2).getValue())
-              )
-              .get()
-              .setPending(false)
-      );
+      var pending = boardService.getBoardById(
+          UUID.fromString(embed.getFields().get(2).getValue()));
+      if (pending.isEmpty()) {
+        e.reply("This submission no longer exists — it may have already been denied or removed.")
+            .setEphemeral(true).queue();
+        return;
+      }
+      b = boardService.saveBoard(pending.get().setPending(false));
     }
+    boardService.mirrorGlobalToLocal(b);
     e.editMessageEmbeds(
             new EmbedBuilder()
                 .setTitle(embed.getTitle())

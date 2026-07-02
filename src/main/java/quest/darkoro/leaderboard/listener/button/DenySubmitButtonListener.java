@@ -25,9 +25,19 @@ public class DenySubmitButtonListener extends ListenerAdapter {
     if (e.isAcknowledged() || !e.getButton().getId().equals("deny_submit")) {
       return;
     }
-    var permitted = e.getGuild()
-        .getRoleById(guildService.getGuildByGuildId(e.getGuild().getIdLong()).get().getPermitted());
-    if (!e.getGuild().retrieveMemberById(e.getUser().getId()).complete().getRoles().contains(permitted)) {
+    var guildConfig = guildService.getGuildByGuildId(e.getGuild().getIdLong());
+    if (guildConfig.isEmpty()) {
+      e.reply("This server is no longer configured!\nUse `/configure server` first.")
+          .setEphemeral(true).queue();
+      return;
+    }
+    var permitted = e.getGuild().getRoleById(guildConfig.get().getPermitted());
+    if (permitted == null) {
+      e.reply("The configured moderator role no longer exists!\nUse `/configure server` to set a new one.")
+          .setEphemeral(true).queue();
+      return;
+    }
+    if (!e.getMember().getRoles().contains(permitted)) {
       e.reply("You don't have permission to deny this submission!").setEphemeral(true).queue();
       return;
     }

@@ -1,6 +1,5 @@
 package quest.darkoro.leaderboard.listener.command;
 
-import java.util.concurrent.ExecutionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -32,32 +31,19 @@ public class SubmitCommandListener extends ListenerAdapter {
     if (!e.getName().equals("submit") || e.isAcknowledged()) {
       return;
     }
-    if (e.getSubcommandName().equals("global")) {
-      try {
-        handleSubmit(e, true);
-      } catch (ExecutionException | InterruptedException ex) {
-        log.error("Error submitting leaderboard submission, probably file", ex);
-        e.reply("An error occurred while submitting your entry!").setEphemeral(true).queue();
-      }
+    var sub = e.getSubcommandName();
+    if (!"global".equals(sub) && !"faction".equals(sub)) {
+      e.reply("Unknown subcommand '%s'".formatted(sub)).setEphemeral(true).queue();
       return;
     }
-    if (e.getSubcommandName().equals("faction")) {
-      try {
-        handleSubmit(e, false);
-      } catch (ExecutionException | InterruptedException ex) {
-        log.error("Error submitting leaderboard submission, probably file", ex);
-        e.reply("An error occurred while submitting your entry!").setEphemeral(true).queue();
-      }
-      return;
-    }
-    e.reply("Unknown subcommand '%s'".formatted(e.getSubcommandName())).setEphemeral(true).queue();
+    handleSubmit(e, "global".equals(sub));
   }
 
-  private void handleSubmit(SlashCommandInteractionEvent e, boolean global)
-      throws ExecutionException, InterruptedException {
+  private void handleSubmit(SlashCommandInteractionEvent e, boolean global) {
     var bot = e.getJDA();
     var gid = e.getGuild().getIdLong();
-    if (guildService.getGuildByGuildId(gid).isEmpty()) {
+    var guildConfig = guildService.getGuildByGuildId(gid);
+    if (guildConfig.isEmpty()) {
       e.reply(checkPermission(e.getMember())
               ? "You must configure the bot first!\nUse `/configure server` for this."
               : "A server administrator must configure the bot first!\nThey can use `/configure server` for this.")
@@ -65,36 +51,53 @@ public class SubmitCommandListener extends ListenerAdapter {
           .queue();
       return;
     }
-    Board b = boardService.saveBoard(
-        new Board()
-            .setGuildId(gid)
-            .setShared(global)
-            .setLevel(e.getOption("level").getAsInt())
-            .setName(e.getOption("username").getAsString())
-    );
-    var guild = guildService.getGuildByGuildId(gid).get();
+    var guild = guildConfig.get();
     var channel = bot.getTextChannelById(guild.getSubmissionChannelId());
-    var embed = new EmbedBuilder()
-        .setTitle((b.isShared() ? "Global " : "") + "Leaderboard Submission")
-        .addField("Username", b.getName(), true)
-        .addField("Level", String.valueOf(b.getLevel()), true)
-        .addField("Submission ID", b.getId().toString(), false)
-        .setColor(0x0000FF)
-        .setFooter(String.format("Leaderboard Bot - %s", e.getGuild().getName()))
-        .build();
+    if (channel == null) {
+      e.reply("The configured submission channel no longer exists!\nA server administrator can set a new one with `/configure server`.")
+          .setEphemeral(true)
+          .queue();
+      return;
+    }
     var proof = e.getOption("proof").getAsAttachment();
-    channel.sendMessage(
+    var guildName = e.getGuild().getName();
+    // Downloading the proof can take longer than the 3s interaction window,
+    // so acknowledge first and run the download off the gateway thread.
+    e.deferReply(true).queue();
+    proof.getProxy().download().whenComplete((data, error) -> {
+      if (error != null) {
+        log.error("Error downloading submission proof", error);
+        e.getHook().sendMessage("An error occurred while submitting your entry!").queue();
+        return;
+      }
+      Board b = boardService.saveBoard(
+          new Board()
+              .setGuildId(gid)
+              .setShared(global)
+              .setLevel(e.getOption("level").getAsInt())
+              .setName(e.getOption("username").getAsString())
+      );
+      var embed = new EmbedBuilder()
+          .setTitle((b.isShared() ? "Global " : "") + "Leaderboard Submission")
+          .addField("Username", b.getName(), true)
+          .addField("Level", String.valueOf(b.getLevel()), true)
+          .addField("Submission ID", b.getId().toString(), false)
+          .setColor(0x0000FF)
+          .setFooter(String.format("Leaderboard Bot - %s", guildName))
+          .build();
+      channel.sendMessage(
         new MessageCreateBuilder()
             .addEmbeds(embed)
             .addContent(String.format("<@&%s>", guild.getPermitted()))
-            .addFiles(FileUpload.fromData(proof.getProxy().download().get(), proof.getFileName()))
+            .addFiles(FileUpload.fromData(data, proof.getFileName()))
             .addActionRow(
                 Button.success("accept_submit", Emoji.fromUnicode("✅")),
                 Button.danger("deny_submit", Emoji.fromUnicode("\uD83D\uDEAB"))
             )
             .build()
-    ).queue();
-    e.reply("Your submission was sucessfully sent!").setEphemeral(true).queue();
+      ).queue();
+      e.getHook().sendMessage("Your submission was successfully sent!").queue();
+    });
   }
 
   private boolean checkPermission(Member m) {

@@ -3,8 +3,10 @@ package quest.darkoro.leaderboard;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = "quest.darkoro.leaderboard")
+@EnableScheduling
 @Slf4j
 public class LeaderboardApplication {
 

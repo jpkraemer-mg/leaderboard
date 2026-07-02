@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Min;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,9 @@ public class GuildController implements GuildsApi {
 
   @Override
   public ResponseEntity<GuildsQueryResult> apiGuildsGet(Optional<@Min(1) Integer> limit) {
-    var guilds = guildRepository.findAll();
+    var guilds = limit
+        .map(l -> guildRepository.findAll(PageRequest.of(0, l)).getContent())
+        .orElseGet(guildRepository::findAll);
     var result = new GuildsQueryResult();
     result.setItems(guilds.stream().map(JpaApiMapper::toApi).toList());
     return ResponseEntity.ok(result);
@@ -33,7 +36,9 @@ public class GuildController implements GuildsApi {
 
   @Override
   public ResponseEntity<Void> apiGuildsIdDelete(Long id) {
-    return guildService.deleteGuildByGuildId(id);
+    return guildService.deleteGuildByGuildId(id)
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.accepted().build();
   }
 
   @Override

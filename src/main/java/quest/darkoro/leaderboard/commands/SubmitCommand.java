@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.springframework.stereotype.Component;
 import quest.darkoro.leaderboard.interfaces.BaseCommand;
+import quest.darkoro.leaderboard.persistence.models.Board;
 
 @Component
 public class SubmitCommand implements BaseCommand {
@@ -20,7 +21,8 @@ public class SubmitCommand implements BaseCommand {
   public SlashCommandData create() {
     var a = List.of(
         new OptionData(STRING, "username", "Your username").setRequired(true),
-        new OptionData(INTEGER, "level", "Your current level").setRequired(true).setMinValue(1).setMaxValue(119989),
+        new OptionData(INTEGER, "level", "Your current level").setRequired(true).setMinValue(1)
+            .setMaxValue(Board.MAX_LEVEL),
         new OptionData(ATTACHMENT, "proof",
             "A screenshot of your current level as proof").setRequired(true)
     );
