@@ -11,7 +11,7 @@ RUN gradle build --stacktrace --no-daemon -i
 
 RUN rm /app/build/libs/*-plain.jar
 
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
