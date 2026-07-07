@@ -46,6 +46,8 @@ public interface BoardRepository extends JpaRepository<Board, UUID> {
 
   boolean existsByPendingFalseAndProcessedFalse();
 
+  boolean existsBySharedTrueAndPendingFalseAndProcessedFalse();
+
   @Query(value = "UPDATE board SET processed=1 WHERE pending=0 AND processed=0 AND shared=1", nativeQuery = true)
   @Modifying
   @Transactional

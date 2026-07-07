@@ -48,6 +48,9 @@ public class LeaderboardService {
     if (onlyUnprocessed && !boardService.hasUnprocessedEntries()) {
       return;
     }
+    // A new global entry changes the global board shown in every server,
+    // so it forces a refresh of all configured guilds, not just its own
+    var globalChanged = !onlyUnprocessed || boardService.hasUnprocessedSharedEntries();
     var configured = guildService.getAllGuilds().stream()
         .collect(Collectors.toMap(Guild::getGuildId, Function.identity()));
     // The global lists are identical for every guild, so fetch them once per run
@@ -58,7 +61,8 @@ public class LeaderboardService {
       if (check == null) {
         return;
       }
-      if (onlyUnprocessed && boardService.findUnprocessedByGuildId(guild.getIdLong()).isEmpty()) {
+      if (onlyUnprocessed && !globalChanged
+          && boardService.findUnprocessedByGuildId(guild.getIdLong()).isEmpty()) {
         return;
       }
       int limit = getLimit(check);
@@ -67,6 +71,11 @@ public class LeaderboardService {
       updateLeaderboard(check, guild, entries, entriesMax,
           globalTop.subList(0, Math.min(limit, globalTop.size())), globalMax);
     });
+    if (globalChanged) {
+      // Shared rows from servers the bot has left would otherwise never be
+      // marked processed and force a full refresh on every tick
+      boardService.setProcessedShared();
+    }
   }
 
   private int getLimit(Guild check) {

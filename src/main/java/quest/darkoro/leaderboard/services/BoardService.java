@@ -64,6 +64,10 @@ public class BoardService {
     return boardRepository.existsByPendingFalseAndProcessedFalse();
   }
 
+  public boolean hasUnprocessedSharedEntries() {
+    return boardRepository.existsBySharedTrueAndPendingFalseAndProcessedFalse();
+  }
+
   public void setProcessedShared() {
     boardRepository.setProcessedShared();
   }
